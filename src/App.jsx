@@ -1,22 +1,14 @@
 import "./App.css";
-import { useEffect } from "react";
+import { useAuthToken } from "./utils/authorization-hook";
+import { useRadioStore } from "./store/store";
 
 const App = () => {
-  useEffect(() => {
-    window.onSpotifyIframeApiReady = (iFrameApi) => {
-      const element = document.getElementById("embed-iframe");
-      const options = {
-        width: "60%",
-        height: "200",
-        uri: "spotify:track:7lTrxftzzPW4WX7VRh6Vxl",
-      };
-      // const callback = (EmbedController) => {};
-      iFrameApi.createController(element, options, callback);
-    };
-  }, []);
+  const { access_token } = useRadioStore(({ tokenData }) => tokenData);
+  useAuthToken();
+
   return (
     <div className='main-container'>
-      <h1>Radio Alex</h1>
+      <h1>Radio "Boot"</h1>
       <div id='embed-iframe' className='player'></div>
     </div>
   );

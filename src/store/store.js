@@ -3,12 +3,13 @@ import { immer } from "zustand/middleware/immer";
 
 export const useRadioStore = create(
   immer((set) => ({
-    dummyVar: null,
+    // { token_type, access_token, expires_in }
+    tokenData: {},
 
     actions: {
-      dummyAction: () =>
+      setToken: (token) =>
         set((state) => {
-          state;
+          state.token = token;
         }),
     },
   }))

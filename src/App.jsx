@@ -16,6 +16,7 @@ const App = () => {
   const isLoaded = useRadioStore(({ isLoaded }) => isLoaded);
   const { setPlaylistLength, setPlaylist, setIsLoaded } = useRadioActions();
 
+  // custom authorization hook
   useAuthToken();
 
   (async () => {

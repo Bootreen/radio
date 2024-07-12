@@ -7,6 +7,8 @@ export const useAuthToken = () => {
   const { setToken, setIsAuthorized } = useRadioActions();
   useEffect(() => {
     (async () => {
+      console.log("Authorisation started");
+      console.log("Client ID:", process.env.CLIENT_ID);
       const { data: token } = await axios.post(
         "https://accounts.spotify.com/api/token",
         new URLSearchParams({
@@ -17,6 +19,7 @@ export const useAuthToken = () => {
           client_secret: process.env.CLIENT_SECRET,
         })
       );
+      console.log(token);
       // Add error handling
       setToken(token);
       setIsAuthorized(true);

@@ -93,7 +93,6 @@ const App = () => {
     const options = {
       width: "75%",
       height: "200",
-      // uri: "spotify:track:4KwvTXx3yR0FA4LGfxD4xP",
     };
     const callback = (EmbedController) => {
       document

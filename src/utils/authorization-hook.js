@@ -1,16 +1,12 @@
 import { useEffect } from "react";
-import { useRadioStore, useRadioActions } from "../store/store";
+import { useRadioActions } from "../store/store";
 import axios from "axios";
 
 export const useAuthToken = () => {
-  const playlist = useRadioStore(({ playlist }) => playlist);
   const { setToken, setIsAuthorized } = useRadioActions();
   useEffect(() => {
     (async () => {
-      // console.log("Authorisation started");
-      // console.log("Client ID:", process.env.CLIENT_ID);
       const { data: token } = await axios.post(
-        // const response = await axios.post(
         "https://accounts.spotify.com/api/token",
         new URLSearchParams({
           grant_type: "client_credentials",
@@ -20,7 +16,6 @@ export const useAuthToken = () => {
           client_secret: process.env.CLIENT_SECRET,
         })
       );
-      // console.log(response);
       // Add error handling
       setToken(token);
       setIsAuthorized(true);

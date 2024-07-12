@@ -13,3 +13,11 @@
 .player {
   width: fit-content;
 }
+
+.track {
+  list-style-type: none;
+}
+
+.track:hover {
+  cursor: pointer;
+}

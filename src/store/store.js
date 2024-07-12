@@ -6,7 +6,7 @@ export const useRadioStore = create(
     // { token_type, access_token, expires_in }
     tokenData: {},
     playlistLength: 0,
-    playlist: {},
+    playlist: [],
     isAuthorized: false,
     isLoaded: false,
 

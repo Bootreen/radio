@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { useRadioActions } from "../store/store";
+import { useRadioStore, useRadioActions } from "../store/store";
 import axios from "axios";
 
 export const useAuthToken = () => {
+  const playlist = useRadioStore(({ playlist }) => playlist);
   const { setToken, setIsAuthorized } = useRadioActions();
   useEffect(() => {
     (async () => {
@@ -20,18 +21,5 @@ export const useAuthToken = () => {
       setToken(token);
       setIsAuthorized(true);
     })();
-
-    // mount embed player (temporary)
-    window.onSpotifyIframeApiReady = (iFrameApi) => {
-      const element = document.getElementById("embed-iframe");
-      const options = {
-        width: "60%",
-        height: "200",
-        uri: "spotify:track:7lTrxftzzPW4WX7VRh6Vxl",
-      };
-      // const callback = (EmbedController) => {};
-      const callback = () => {};
-      iFrameApi.createController(element, options, callback);
-    };
   }, []);
 };

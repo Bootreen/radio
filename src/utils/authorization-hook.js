@@ -3,7 +3,7 @@ import { useRadioActions } from "../store/store";
 import axios from "axios";
 
 export const useAuthToken = () => {
-  const { setToken } = useRadioActions();
+  const { setToken, setIsAuthorized } = useRadioActions();
   useEffect(() => {
     (async () => {
       const { data: token } = await axios.post(
@@ -16,7 +16,9 @@ export const useAuthToken = () => {
           client_secret: process.env.CLIENT_SECRET,
         })
       );
+      // Add error handling
       setToken(token);
+      setIsAuthorized(true);
     })();
 
     // mount embed player (temporary)

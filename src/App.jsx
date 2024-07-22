@@ -1,9 +1,6 @@
 import "./App.css";
 import { useAuthToken } from "./utils/authorization-hook";
-import {
-  fetchPlaylistLength,
-  fetchPlaylistItems,
-} from "./utils/fetch-spotify-data";
+import { fetchPlaylist } from "./utils/fetch-spotify-data";
 import { useRadioStore, useRadioActions } from "./store/store";
 
 const App = () => {
@@ -23,67 +20,9 @@ const App = () => {
     // Load only if authorization is completed and accessToken is received
     // Prevent infinite reloads — load only once
     if (isAuthorized && !isLoaded) {
-      const {
-        data: { total },
-      } = await fetchPlaylistLength(accessToken);
+      const { total, fetchedPlaylist } = await fetchPlaylist(accessToken);
       setPlaylistLength(total);
-
-      // Short playlist fetch version (10 songs)
-      const {
-        data: { items },
-      } = await fetchPlaylistItems(accessToken, 10, 5);
-      setPlaylist(
-        items.map(
-          ({
-            track: {
-              uri,
-              name,
-              artists,
-              album: { name: album, id: albumId },
-            },
-          }) => ({
-            uri,
-            name,
-            artists: artists.map(({ name }) => name).join(", "),
-            album,
-            albumId,
-          })
-        )
-      );
-
-      // FULL VERSION (all 2k songs)
-      // const playlistChuncksMap = [];
-      // for (let i = 0; i < playlistLength; i += 100)
-      //   playlistChuncksMap.push({
-      //     limit: playlistLength - i >= 100 ? 100 : playlistLength - i,
-      //     offset: i,
-      //   });
-      // let fetchedPlaylist = [];
-      // for await (const { limit, offset } of playlistChuncksMap) {
-      //   const {
-      //     data: { items },
-      //   } = await fetchPlaylistItems(accessToken, limit, offset);
-      //   fetchedPlaylist = [
-      //     ...fetchedPlaylist,
-      //     ...items.map(
-      //       ({
-      //         track: {
-      //           uri,
-      //           name,
-      //           artists,
-      //           album: { name: album, id: albumId },
-      //         },
-      //       }) => ({
-      //         uri,
-      //         name,
-      //         artists: artists.map(({ name }) => name).join(", "),
-      //         album,
-      //         albumId,
-      //       })
-      //     ),
-      //   ];
-      // }
-      // setPlaylist(fetchedPlaylist);
+      setPlaylist(fetchedPlaylist);
       setIsLoaded(true);
     }
   })();
@@ -98,8 +37,7 @@ const App = () => {
       document
         .querySelector("iframe")
         .addEventListener("startTrack", (event) => {
-          console.log("Start track, uri:", event.detail.uri);
-          EmbedController.loadUri(event.detail.uri);
+          EmbedController.loadUri("spotify:track:" + event.detail.id);
           EmbedController.play();
         });
     };
@@ -109,7 +47,7 @@ const App = () => {
   const dispatchStartTrack = (i) => {
     document.querySelector("iframe").dispatchEvent(
       new CustomEvent("startTrack", {
-        detail: { uri: playlist[i].uri },
+        detail: { id: playlist[i].id },
         bubbles: true,
         cancelable: true,
         composed: false,
@@ -124,7 +62,7 @@ const App = () => {
       <ul>
         {isLoaded &&
           playlist
-            // .filter((_, i) => i <= 5)
+            // .filter((_, i) => i <= 500 && i > 490)
             .map(({ name, artists, album }, i) => (
               <li
                 className='track'

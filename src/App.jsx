@@ -1,6 +1,6 @@
 import "./App.css";
 import { useAuthToken } from "./utils/authorization-hook";
-import { fetchPlaylist } from "./utils/fetch-spotify-data";
+import { fetchAllPlaylistData } from "./utils/fetch-spotify-data";
 import { useRadioStore, useRadioActions } from "./store/store";
 
 const App = () => {
@@ -20,9 +20,10 @@ const App = () => {
     // Load only if authorization is completed and accessToken is received
     // Prevent infinite reloads — load only once
     if (isAuthorized && !isLoaded) {
-      const { total, fetchedPlaylist } = await fetchPlaylist(accessToken);
-      setPlaylistLength(total);
-      setPlaylist(fetchedPlaylist);
+      const { length, tracks, artists, albums, genres } =
+        await fetchAllPlaylistData(accessToken);
+      setPlaylistLength(length);
+      setPlaylist(tracks);
       setIsLoaded(true);
     }
   })();
